@@ -1,2 +1,9 @@
-* XMonad config
+#+TITLE: XMonad configuration file
+#+AUTHOR: Nicolas Bertrand
+#+STARTUP: showeverything
 
+* About
+** TODO Put a short description and a screenshot
+** License
+
+   This configuration is licensed under the MIT license. See provided [Move config to README.org[https://github.com/tampix/.xmonad/blob/master/LICENSE][LICENSE]].
