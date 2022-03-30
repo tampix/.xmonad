@@ -1,13 +1,13 @@
 -- XMobase base
 import XMonad
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageHelpers (doCenterFloat, doRectFloat)
 import qualified XMonad.StackSet as W
 
 -- XMonad utils
 import XMonad.Util.EZConfig (additionalKeysP, checkKeymap)
 
 -- Utils
-import Control.Monad.IO.Class (liftIO)
 import System.Posix.Env (putEnv)
 
 -- Variables
@@ -52,9 +52,15 @@ myStartupHook = do
   mapM_ spawn
     [ "nitrogen --restore"             -- load wallpaper
     , "xrdb ~/.Xresources"             -- load config
+    , "xrandr --dpi 216"               -- load dpi config
     , "xsetroot -cursor_name left_ptr" -- load mouse cursor
     ]
   checkKeymap myConfig (myKeyBindings myConfig)
+
+myManageHook = composeAll
+  [ role =? "GtkFileChooserDialog" --> doRectFloat (W.RationalRect 0.33 0.33 0.66 0.66) ]
+  where
+    role = stringProperty "WM_WINDOW_ROLE"
 
 -- Main configuration.
 myConfig = def
@@ -62,6 +68,7 @@ myConfig = def
   , terminal = myTerminal
   , workspaces = myWorkspaces
   , startupHook = myStartupHook
+  , manageHook = myManageHook
   }
   `additionalKeysP`
   (myKeyBindings myConfig)
