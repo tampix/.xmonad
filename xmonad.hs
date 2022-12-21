@@ -17,7 +17,7 @@ myModMask = mod4Mask
 
 myEditor = "emacsclient --alternate-editor=\"\" -c \"$@\""
 
-myWebBrowser = "icecat"
+myWebBrowser = "firefox"
 
 myLauncher = "rofi -show drun -theme slate -icon-theme Papirus -show-icons"
 
