@@ -1,7 +1,9 @@
 -- XMobase base
 import XMonad
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.ManageHelpers (doCenterFloat, doRectFloat)
+import XMonad.Hooks.ManageDocks (docks, docksEventHook, avoidStruts)
+import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
+import XMonad.Hooks.ManageHelpers (doRectFloat, isFullscreen, doFullFloat)
 import qualified XMonad.StackSet as W
 
 -- XMonad utils
@@ -45,42 +47,44 @@ myKeyBindings cfg =
 
 -- Hook ran before xmonad is actually started.
 myStartupHook = do
-  return ()
   mapM_ (liftIO . putEnv)
     [ "_JAVA_AWT_WM_NONREPARENTING=1"
-    , "EDITOR=" ++ myEditor]
-  mapM_ spawn
-    [ "nitrogen --restore"             -- load wallpaper
-    , "xrdb ~/.Xresources"             -- load config
-    , "xrandr --dpi 216"               -- load dpi config
-    , "xsetroot -cursor_name left_ptr" -- load mouse cursor
+    , "EDITOR=" ++ myEditor
     ]
   checkKeymap myConfig (myKeyBindings myConfig)
 
 myManageHook = composeAll
-  [ role =? "GtkFileChooserDialog" --> doRectFloat (W.RationalRect 0.33 0.33 0.66 0.66) ]
-  where
-    role = stringProperty "WM_WINDOW_ROLE"
+  [ isFullscreen --> doFullFloat
+  , role =? "GtkFileChooserDialog" --> doRectFloat (W.RationalRect 0.33 0.33 0.66 0.66)
+  ]
+  where role = stringProperty "WM_WINDOW_ROLE"
+
+myLogHook = return ()
+
+myHandleEventHook = handleEventHook def
 
 -- Main configuration.
 myConfig = def
-  { modMask = myModMask
-  , terminal = myTerminal
-  , workspaces = myWorkspaces
-  , startupHook = myStartupHook
-  , manageHook = myManageHook
+  { modMask         = myModMask
+  , terminal        = myTerminal
+  , workspaces      = myWorkspaces
+  , startupHook     = myStartupHook
+  , manageHook      = myManageHook <+> manageHook def
+  , logHook         = myLogHook
+  , handleEventHook = myHandleEventHook
   }
   `additionalKeysP`
   (myKeyBindings myConfig)
 
--- The main function.
-main = xmonad =<< statusBar myBar myPP toggleBarKeyBiding myConfig
-
--- Command to launch the bar.
 myBar = "xmobar"
 
--- Bar's pretting printing configuration,
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+myPP = xmobarPP
+  { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 
 -- Key binding to toggle the bar.
 toggleBarKeyBiding XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+
+main :: IO ()
+main = do
+  conf <- statusBar myBar myPP toggleBarKeyBiding myConfig
+  xmonad $ ewmhFullscreen $ ewmh $ docks conf
