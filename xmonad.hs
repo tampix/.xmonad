@@ -21,7 +21,7 @@ myEditor = "emacsclient --alternate-editor=\"\" -c \"$@\""
 
 myWebBrowser = "firefox"
 
-myLauncher = "rofi -show drun -theme slate -icon-theme Papirus -show-icons"
+myLauncher = "rofi -show drun"
 
 myScreenshot = "scrot -q 90"
 
