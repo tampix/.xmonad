@@ -25,7 +25,7 @@ myLauncher = "rofi -show drun"
 
 myScreenshot = "scrot -q 90"
 
-myTerminal = "urxvt" -- TODO change with urxvtcd
+myTerminal = "xterm"
 
 -- Key configuration
 myKeyBindings cfg =
