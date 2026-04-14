@@ -25,7 +25,7 @@ myLauncher = "rofi -show drun"
 
 myScreenshot = "scrot -q 90"
 
-myTerminal = "xterm"
+myTerminal = "ghostty"
 
 -- Key configuration
 myKeyBindings cfg =
